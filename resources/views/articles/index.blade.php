@@ -1,9 +1,16 @@
 <x-layout title="Latest articles">
     <h1 class="mb-4">Latest articles</h1>
 
+    <div class="mb-4">
+        <label for="article-search" class="form-label">Search by title</label>
+        {{-- autocomplete="off" stops the browser restoring old text on Back while every card is shown. --}}
+        <input type="search" id="article-search" class="form-control" placeholder="Start typing a title…" autocomplete="off">
+        <p id="search-status" class="form-text mb-0" aria-live="polite"></p>
+    </div>
+
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @forelse ($articles as $article)
-            <div class="col">
+            <div class="col" data-article data-title="{{ $article->title }}">
                 <article class="card h-100 shadow-sm">
                     @if ($article->thumbnail_url)
                         <img src="{{ $article->thumbnail_url }}" class="card-img-top" alt="{{ $article->title }}" loading="lazy">
@@ -27,4 +34,29 @@
             <p class="w-100 text-body-secondary">No articles have been published yet.</p>
         @endforelse
     </div>
+
+    @push('scripts')
+        <script>
+            const searchInput = document.getElementById('article-search');
+            const searchStatus = document.getElementById('search-status');
+            const articles = document.querySelectorAll('[data-article]');
+
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                articles.forEach((article) => {
+                    const matches = article.dataset.title.toLowerCase().includes(query);
+
+                    article.hidden = !matches;
+
+                    if (matches) {
+                        visibleCount++;
+                    }
+                });
+
+                searchStatus.textContent = visibleCount === 0 ? 'No articles match your search.' : '';
+            });
+        </script>
+    @endpush
 </x-layout>
