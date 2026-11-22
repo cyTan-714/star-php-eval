@@ -11,7 +11,9 @@
 
                     <div class="card-body">
                         <span class="badge text-bg-primary mb-2">{{ $article->category->name }}</span>
-                        <h2 class="card-title h5">{{ $article->title }}</h2>
+                        <h2 class="card-title h5">
+                            <a href="{{ route('articles.show', $article) }}" class="stretched-link text-body-emphasis text-decoration-none">{{ $article->title }}</a>
+                        </h2>
                         <p class="card-text text-body-secondary">{{ $article->summary }}</p>
                     </div>
 

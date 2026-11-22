@@ -20,4 +20,16 @@ class ArticleController extends Controller
 
         return view('articles.index', ['articles' => $articles]);
     }
+
+    /**
+     * Show a single published article.
+     */
+    public function show(Article $article): View
+    {
+        abort_unless($article->isPublished(), 404);
+
+        $article->load('category');
+
+        return view('articles.show', ['article' => $article]);
+    }
 }
